@@ -5,7 +5,7 @@ namespace EduLink.Api.Middlewares;
 
 public class GlobalErrorHandlerMiddleware(ILogger<GlobalErrorHandlerMiddleware> logger) : IMiddleware
 {
-    private readonly ILogger<GlobalErrorHandlerMiddleware> _logger = logger;
+    //private readonly ILogger<GlobalErrorHandlerMiddleware> _logger = logger;
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
@@ -20,7 +20,7 @@ public class GlobalErrorHandlerMiddleware(ILogger<GlobalErrorHandlerMiddleware> 
             context.Response.StatusCode = 404;
            await context.Response.WriteAsync(notFound.Message);
 
-            _logger.LogWarning(notFound.Message);
+            logger.LogWarning(notFound.Message);
         }
         catch (Exception ex)
         {
