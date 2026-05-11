@@ -1,0 +1,5 @@
+@EduLink.Api_HostAddress = https://localhost:7024
+
+GET {{EduLink.Api_HostAddress}}/api/academies
+
+###
