@@ -5,7 +5,6 @@ namespace EduLink.Api.Middlewares;
 
 public class GlobalErrorHandlerMiddleware(ILogger<GlobalErrorHandlerMiddleware> logger) : IMiddleware
 {
-    //private readonly ILogger<GlobalErrorHandlerMiddleware> _logger = logger;
 
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
@@ -25,7 +24,6 @@ public class GlobalErrorHandlerMiddleware(ILogger<GlobalErrorHandlerMiddleware> 
         catch (Exception ex)
         {
             logger.LogError(ex, ex.Message);
-          //  await HandleExceptionAsync(context, ex, _logger);
 
             context.Response.StatusCode = 500;
            await context.Response.WriteAsync("something went Wrong!");

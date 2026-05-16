@@ -1,5 +1,11 @@
 @EduLink.Api_HostAddress = https://localhost:7024
 
-GET {{EduLink.Api_HostAddress}}/api/academies
+POST {{EduLink.Api_HostAddress}}/api/academies/{academyId}/courses
+Content-Type: application/json
+
+{
+  //CreateCourseCommand
+}
 
 ###
+GET https://localhost:7024/api/academies/2/courses/1006 

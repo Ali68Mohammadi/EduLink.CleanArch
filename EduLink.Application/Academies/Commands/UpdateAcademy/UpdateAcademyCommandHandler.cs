@@ -19,7 +19,6 @@ public class UpdateAcademyCommandHandler(IAcademiesRepository academiesRepositor
         if (academy is null)
             throw new NotFoundException(nameof(Academy), request.Id.ToString());
 
-
         mapper.Map(request, academy);
         await academiesRepository.SaveChangesAsync();
 

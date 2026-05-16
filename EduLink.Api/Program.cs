@@ -22,7 +22,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<GlobalErrorHandlerMiddleware>();
-builder.Services.AddScoped<RequestTimeLoggingMiddleware>();
+//builder.Services.AddScoped<RequestTimeLoggingMiddleware>();
 
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
@@ -38,7 +38,7 @@ var seeder = scope.ServiceProvider.GetRequiredService<IEdulinkSeeder>();
 await seeder.SeedAsync();
 
 app.UseMiddleware<GlobalErrorHandlerMiddleware>();
-app.UseMiddleware<RequestTimeLoggingMiddleware>();
+//app.UseMiddleware<RequestTimeLoggingMiddleware>();
 
 
 app.UseSerilogRequestLogging();

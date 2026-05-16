@@ -21,6 +21,7 @@ namespace EduLink.Infrastructure.Extensions
             services.AddScoped<IAcademiesRepository, AcademiesRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<ICoursesRepository, CoursesRepository>();
         }
     }
 }

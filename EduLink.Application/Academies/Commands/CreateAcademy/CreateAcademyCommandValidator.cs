@@ -13,7 +13,7 @@ public class CreateAcademyCommandValidator : AbstractValidator<CreateAcademyComm
         RuleFor(dto => dto.Name)
             .Length(3, 100);
 
-        RuleFor(dto => dto.Description)
+        RuleFor(dto => dto.Descriptaion)
             .Length(3, 500)
             .NotEmpty().WithMessage("Descriptaion is required!");
 

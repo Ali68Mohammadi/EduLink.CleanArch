@@ -39,4 +39,5 @@ internal class AcademiesRepository(EduLinkDbContext context) : IAcademiesReposit
         await context.SaveChangesAsync();
 
     }
+
 }

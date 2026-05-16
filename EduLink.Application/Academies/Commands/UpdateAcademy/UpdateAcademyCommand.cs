@@ -1,5 +1,4 @@
-﻿using EduLink.Application.Courses.Dtos;
-using MediatR;
+﻿using MediatR;
 
 namespace EduLink.Application.Academies.Commands.UpdateAcademy;
 
