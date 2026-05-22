@@ -8,7 +8,7 @@ public class Academy
     public string Description { get; set; } = default!;
     public string Category { get; set; } = default!;
     public bool IsOnline { get; set; }
-   
+
     public string? ContactEmail { get; set; }
     public string? ContactNumber { get; set; }
 
@@ -17,6 +17,7 @@ public class Academy
     public Address? Address { get; set; }
     public List<Course> Courses { get; set; } = [];
 
-    //   public List<Teacher> Teachers { get; set; } = [];
+    public User Manager { get; set; } = default!;
+    public string ManagerId { get; set; } = default!;
 
 }

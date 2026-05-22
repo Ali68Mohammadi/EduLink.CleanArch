@@ -1,10 +1,12 @@
 ﻿using EduLink.Application.Academies.Commands.UpdateAcademy;
 using EduLink.Application.Courses.Command.CreateCourse;
 using EduLink.Application.Courses.Command.DeleteCourses;
+using EduLink.Application.Courses.Command.UpdateCourse;
 using EduLink.Application.Courses.Queries.GetCourseByIdForAcademy;
 using EduLink.Application.Courses.Queries.GetCoursesForAcademy;
-using EduLink.Application.Courses.Command.UpdateCourse;
+using EduLink.Infrastructure.Authorization;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -12,6 +14,7 @@ namespace EduLink.Api.Controllers;
 
 [Route("api/academies/{academyId}/courses")]
 [ApiController]
+[Authorize]
 public class CoursesController(IMediator mediator) : ControllerBase
 {
     [HttpGet()]
@@ -22,7 +25,9 @@ public class CoursesController(IMediator mediator) : ControllerBase
         return Ok(courses);
     }
 
+
     [HttpGet("{courseId}")]
+    [Authorize(Policy = PlicyNames.AtLeast20)]
     public async Task<ActionResult> GetByIdForAcademy([FromRoute] int academyId, [FromRoute] int courseId)
     {
 
@@ -40,7 +45,10 @@ public class CoursesController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(GetByIdForAcademy), new { academyId, courseId }, null);
     }
 
+
     [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteCoursesForAcademy([FromRoute] int academyId)
     {
         await mediator.Send(new DeleteCoursesForAcademyCommand(academyId));
@@ -49,6 +57,8 @@ public class CoursesController(IMediator mediator) : ControllerBase
 
 
     [HttpPatch("{courseId}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateCourseForAcademy([FromRoute] int academyId, [FromRoute] int courseId,
         [FromBody] UpdateCourseForAcademyCommand command)
     {

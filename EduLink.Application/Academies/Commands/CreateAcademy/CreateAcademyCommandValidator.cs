@@ -6,20 +6,22 @@ namespace EduLink.Application.Academies.Commands.CreateAcademy;
 public class CreateAcademyCommandValidator : AbstractValidator<CreateAcademyCommand>
 {
     private readonly List<string> validCategories =
-    ["Programming", "Business", "Languages", "Art", "PersonalDevelopment"];
+    ["IT", "Business", "Languages", "Art", "PersonalDevelopment"];
 
     public CreateAcademyCommandValidator()
     {
+
+
         RuleFor(dto => dto.Name)
             .Length(3, 100);
 
-        RuleFor(dto => dto.Descriptaion)
+        RuleFor(dto => dto.Description)
             .Length(3, 500)
-            .NotEmpty().WithMessage("Descriptaion is required!");
+            .NotEmpty().WithMessage("Description is required!");
 
         RuleFor(dto => dto.Category)
-            .Must( validCategories.Contains)
-            .WithMessage("Invalid Category. Please choose from the Valid Categories! ");
+            .Must(category => validCategories.Contains(category, StringComparer.OrdinalIgnoreCase))
+            .WithMessage($"Invalid Category. Please choose from: {string.Join(", ", validCategories)}");
 
         //or :
         //.Custom((value, context) =>

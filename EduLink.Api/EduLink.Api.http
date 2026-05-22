@@ -9,3 +9,8 @@ Content-Type: application/json
 
 ###
 GET https://localhost:7024/api/academies/2/courses/1006 
+
+GET {{EduLink.Api_HostAddress}}/api/academies
+Authorization: Bearer {{$bearerToken}}
+
+###

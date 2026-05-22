@@ -4,6 +4,7 @@ using EduLink.Domain.Entities.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EduLink.Infrastructure.Migrations
 {
     [DbContext(typeof(EduLinkDbContext))]
-    partial class EduLinkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260517205145_UserAddinationlPropertiesAdded")]
+    partial class UserAddinationlPropertiesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,17 +50,11 @@ namespace EduLink.Infrastructure.Migrations
                     b.Property<bool>("IsOnline")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ManagerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ManagerId");
 
                     b.ToTable("Academies");
                 });
@@ -103,7 +100,7 @@ namespace EduLink.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly?>("DateOfBirth")
+                    b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
 
                     b.Property<string>("Email")
@@ -297,12 +294,6 @@ namespace EduLink.Infrastructure.Migrations
 
             modelBuilder.Entity("EduLink.Domain.Entities.Academy", b =>
                 {
-                    b.HasOne("EduLink.Domain.Entities.User", "Manager")
-                        .WithMany("ManagedAcademies")
-                        .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.OwnsOne("EduLink.Domain.Entities.Address", "Address", b1 =>
                         {
                             b1.Property<int>("AcademyId")
@@ -326,8 +317,6 @@ namespace EduLink.Infrastructure.Migrations
                         });
 
                     b.Navigation("Address");
-
-                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("EduLink.Domain.Entities.Course", b =>
@@ -393,11 +382,6 @@ namespace EduLink.Infrastructure.Migrations
             modelBuilder.Entity("EduLink.Domain.Entities.Academy", b =>
                 {
                     b.Navigation("Courses");
-                });
-
-            modelBuilder.Entity("EduLink.Domain.Entities.User", b =>
-                {
-                    b.Navigation("ManagedAcademies");
                 });
 #pragma warning restore 612, 618
         }
