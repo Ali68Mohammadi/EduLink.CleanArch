@@ -40,4 +40,9 @@ internal class AcademiesRepository(EduLinkDbContext context) : IAcademiesReposit
 
     }
 
+    public async Task<IEnumerable<Academy>> GetByManagerIdAsync(string managerId)
+    {
+        var academies = await context.Academies.Where(t => t.ManagerId == managerId).ToListAsync();
+        return academies;
+    }
 }

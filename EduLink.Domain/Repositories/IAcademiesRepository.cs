@@ -9,5 +9,5 @@ public interface IAcademiesRepository
     Task<int> Create(Academy entity);
     Task Delete(Academy entity);
     Task SaveChangesAsync();
-
+    Task<IEnumerable<Academy>> GetByManagerIdAsync(string managerId);
 }

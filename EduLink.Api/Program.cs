@@ -1,5 +1,7 @@
+using EduLink.Api.Extensions;
 using EduLink.Api.Middlewares;
 using EduLink.Application.Extensions;
+using EduLink.Domain.Entities;
 using EduLink.Infrastructure.Extensions;
 using EduLink.Infrastructure.Seeder;
 using Serilog;
@@ -7,25 +9,16 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
+//config our Services from WebApplicationBuilder Hier
+builder.AddPresentaion();
 
 //config our Interfaces(repository) and  DbContext Hier
 builder.Services.AddInfrastructure(builder.Configuration);
 
-//config our Services Hier
+//config our Services from IServiceCollection Hier
 builder.Services.AddApplication();
-builder.Services.AddJwtAuthentication(builder.Configuration);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<GlobalErrorHandlerMiddleware>();
-//builder.Services.AddScoped<RequestTimeLoggingMiddleware>();
-
-builder.Host.UseSerilog((context, configuration) =>
-    configuration.ReadFrom.Configuration(context.Configuration));
 
 //**//////////////////////////////////////////////////////////////////////////////////////////////////**//
 
@@ -51,6 +44,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapGroup("api/identity")
+    .WithTags("Identity")
+    .MapIdentityApi<User>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

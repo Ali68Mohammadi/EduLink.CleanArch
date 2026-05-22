@@ -1,7 +1,15 @@
-﻿using EduLink.Domain.Entities.Persistence;
+﻿using EduLink.Domain.Entities;
+using EduLink.Domain.Entities.Persistence;
+using EduLink.Domain.Interfaces;
 using EduLink.Domain.Repositories;
+using EduLink.Infrastructure.Authorization;
+using EduLink.Infrastructure.Authorization.Requirements.MinimumAcademiesRequirement;
+using EduLink.Infrastructure.Authorization.Requirements.MinimumAgeRequirement;
+using EduLink.Infrastructure.Authorization.Services;
 using EduLink.Infrastructure.Repositories;
 using EduLink.Infrastructure.Seeder;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,12 +24,30 @@ namespace EduLink.Infrastructure.Extensions
             services.AddDbContext<EduLinkDbContext>(option => option.UseSqlServer(connectionString)
                 .EnableSensitiveDataLogging());
 
+            services.AddIdentityApiEndpoints<User>()
+                .AddRoles<IdentityRole>()
+                .AddClaimsPrincipalFactory<EduLinkUserClaimsPrincipalFactory>()
+                .AddEntityFrameworkStores<EduLinkDbContext>();
 
             services.AddScoped<IEdulinkSeeder, EdulinkSeeder>();
+
             services.AddScoped<IAcademiesRepository, AcademiesRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IAuthRepository, AuthRepository>();
+
             services.AddScoped<ICoursesRepository, CoursesRepository>();
+
+            services.AddAuthorizationBuilder()
+                .AddPolicy(PlicyNames.HasNationality,
+                builder => builder.RequireClaim(AppClaimTypes.Nationality, "Deutsch", "Iran"))
+                .AddPolicy(PlicyNames.AtLeast20,
+                builder => builder.AddRequirements(new MinimumAgeRequirement(20)))
+                .AddPolicy(PlicyNames.AtLeast2Academies,
+                builder => builder.AddRequirements(new MinimumAcademiesRequirement(2)));
+
+
+            services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, MinimumAcademiesRequirementHandler>();
+            services.AddScoped<IAcademyAuthorizationService, AcademyAuthorizationService>();
+            services.AddScoped<IProfileAuthorizationService, ProfileAuthorizationService>();
         }
     }
 }

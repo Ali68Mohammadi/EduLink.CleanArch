@@ -1,5 +1,8 @@
-﻿using EduLink.Domain.Entities.Persistence;
+﻿using EduLink.Domain.Constants;
 using EduLink.Domain.Entities;
+using EduLink.Domain.Entities.Persistence;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace EduLink.Infrastructure.Seeder;
 
@@ -16,6 +19,34 @@ internal class EdulinkSeeder(EduLinkDbContext context) : IEdulinkSeeder
                 await context.SaveChangesAsync();
             }
         }
+
+         if (!context.Roles.Any())
+        {
+            var roles = GetRoles();
+            context.Roles.AddRange(roles);
+            context.SaveChanges();
+        }
+    }
+
+    private IEnumerable<IdentityRole> GetRoles()
+    {
+        List<IdentityRole> roles =
+            [
+                new(UserRoles.User)
+                {
+                    NormalizedName=UserRoles.User.ToUpper()
+                }, 
+                new(UserRoles.Manager)
+                {
+                    NormalizedName=UserRoles.Manager.ToUpper()
+                },
+                new(UserRoles.Admin)
+                {
+                    NormalizedName=UserRoles.Admin.ToUpper()
+                },
+
+            ];
+        return roles;
     }
 
     private IEnumerable<Academy> GetAcademies()

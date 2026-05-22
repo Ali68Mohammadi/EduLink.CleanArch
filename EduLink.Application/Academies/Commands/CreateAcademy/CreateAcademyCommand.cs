@@ -5,7 +5,7 @@ namespace EduLink.Application.Academies.Commands.CreateAcademy;
 public class CreateAcademyCommand:IRequest<int>
 {
     public string Name { get; set; } = default!;
-    public string Descriptaion { get; set; } = default!;
+    public string Description { get; set; } = default!;
     public string Category { get; set; } = default!;
     public bool IsOnline { get; set; }
     public string? ContactEmail { get; set; }

@@ -1,5 +1,6 @@
-﻿using EduLink.Domain.Entities;
+﻿using EduLink.Domain.Constants;
 using EduLink.Domain.Exceptions;
+using EduLink.Domain.Interfaces;
 using EduLink.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -8,7 +9,7 @@ namespace EduLink.Application.Courses.Command.DeleteCourses;
 
 public class DeleteCoursesForAcademyCommandHandler(ILogger<DeleteCoursesForAcademyCommandHandler> logger,
     IAcademiesRepository academiesRepository,
-    ICoursesRepository coursesRepository)
+    ICoursesRepository coursesRepository, IAcademyAuthorizationService academyAuthorizationService )
     : IRequestHandler<DeleteCoursesForAcademyCommand>
 {
     public async Task Handle(DeleteCoursesForAcademyCommand request, CancellationToken cancellationToken)
@@ -17,6 +18,9 @@ public class DeleteCoursesForAcademyCommandHandler(ILogger<DeleteCoursesForAcade
 
         var academy = await academiesRepository.GetByIdAsync(request.AcademyId);
         if (academy == null) throw new NotFoundException(nameof(academy), request.AcademyId.ToString());
+
+        if (!academyAuthorizationService.Authorize(academy, ResourceOperationEnm.Update))
+            throw new ForbidExeption();
 
         await coursesRepository.DeleteCourses(academy.Courses);
 
