@@ -20,7 +20,6 @@ The project is designed using Clean Architecture principles to ensure maintainab
 * **Identity & Security:** ASP.NET Core Identity Core
 * **Patterns:** Repository Pattern, CQRS, Dependency Injection, Options Pattern
 * **Libraries:** MediatR, FluentValidation, Serilog, AutoMapper
-* **DevOps:** Docker ready (Dockerfile configuration included)
 
 ## 📁 Project Structure
 
