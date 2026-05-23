@@ -1,5 +1,5 @@
 @EduLink.Api_HostAddress = https://localhost:7024
-
+@bearerToken=
 POST {{EduLink.Api_HostAddress}}/api/academies/{academyId}/courses
 Content-Type: application/json
 
@@ -9,6 +9,26 @@ Content-Type: application/json
 
 ###
 GET https://localhost:7024/api/academies/2/courses/1006 
+
+GET {{EduLink.Api_HostAddress}}/api/academies
+Authorization: Bearer {{$bearerToken}}
+
+###
+
+GET {{EduLink.Api_HostAddress}}/api/Academies?SearchPhrase=te&PageNumber=1&PageSize=5&SortBy=Name&SortDirection=descending
+//Authorization: Bearer {{$bearerToken}}
+
+###
+
+GET {{EduLink.Api_HostAddress}}/api/login
+Authorization: Bearer {{$bearerToken}}
+
+###
+
+GET {{EduLink.Api_HostAddress}}/api/academies
+Authorization: Bearer {{$bearerToken}}
+
+###
 
 GET {{EduLink.Api_HostAddress}}/api/academies
 Authorization: Bearer {{$bearerToken}}

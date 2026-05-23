@@ -1,4 +1,5 @@
-﻿using EduLink.Domain.Entities;
+﻿using EduLink.Domain.Constants;
+using EduLink.Domain.Entities;
 
 namespace EduLink.Domain.Repositories;
 
@@ -10,4 +11,7 @@ public interface IAcademiesRepository
     Task Delete(Academy entity);
     Task SaveChangesAsync();
     Task<IEnumerable<Academy>> GetByManagerIdAsync(string managerId);
+    Task<(IEnumerable<Academy>, int)> GetAllMatchingAsync(string SearchPhrase,
+        int pageNumber, int pageSize, string? sortBy, SortDirectionEnm sortDirection);
+
 }

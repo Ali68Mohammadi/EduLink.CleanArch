@@ -1,7 +1,9 @@
-﻿using EduLink.Domain.Entities;
+﻿using EduLink.Domain.Constants;
+using EduLink.Domain.Entities;
 using EduLink.Domain.Entities.Persistence;
 using EduLink.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EduLink.Infrastructure.Repositories;
 
@@ -44,5 +46,40 @@ internal class AcademiesRepository(EduLinkDbContext context) : IAcademiesReposit
     {
         var academies = await context.Academies.Where(t => t.ManagerId == managerId).ToListAsync();
         return academies;
+    }
+
+    public async Task<(IEnumerable<Academy>, int)> GetAllMatchingAsync(string? SearchPhrase,
+        int pageNumber, int pageSize, string? sortBy, SortDirectionEnm sortDirection)
+    {
+        string? searchPhraseLower = SearchPhrase?.ToLower();
+
+        var baseQuery = context.Academies
+            .Where(a => searchPhraseLower == null ||
+                        a.Name.ToLower().Contains(searchPhraseLower) ||
+                        a.Description.ToLower().Contains(searchPhraseLower));
+
+        var totalCount = await baseQuery.CountAsync();
+
+        if (sortBy != null)
+        {
+            var columnSelector = new Dictionary<string, Expression<Func<Academy, object>>>
+            {
+                { nameof(Academy.Name) ,a=>a.Name},
+                { nameof(Academy.Description), a=>a.Description },
+                { nameof(Academy.Category), a => a.Category },
+            };
+
+            var selectedColumn = columnSelector[sortBy];
+
+            baseQuery = sortDirection == SortDirectionEnm.Ascending ?
+                baseQuery.OrderBy(selectedColumn)
+                : baseQuery.OrderByDescending(selectedColumn);
+        }
+        var academies = await baseQuery
+            .Skip(pageSize * (pageNumber - 1))
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (academies, totalCount);
     }
 }

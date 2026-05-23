@@ -18,10 +18,11 @@ namespace EduLink.Api.Controllers;
 public class AcademiesController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    [Authorize(Policy = PlicyNames.AtLeast2Academies)]
-    public async Task<IActionResult> GetAllAcademies()
+    [AllowAnonymous]
+    //[Authorize(Policy = PlicyNames.AtLeast2Academies)]
+    public async Task<ActionResult<IEnumerable<AcademyDto>>> GetAllAcademies([FromQuery] GetAllAcademiesQuery query)
     {
-        var academies = await mediator.Send(new GetAllAcademiesQuery());
+        var academies = await mediator.Send(query);
         return Ok(academies);
     }
 
