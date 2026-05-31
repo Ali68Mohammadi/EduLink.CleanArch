@@ -10,6 +10,11 @@ internal class EdulinkSeeder(EduLinkDbContext context) : IEdulinkSeeder
 {
     public async Task SeedAsync()
     {
+        if (context.Database.GetPendingMigrations().Any())
+        {
+            await context.Database.MigrateAsync();
+        }
+
         if (await context.Database.CanConnectAsync())
         {
             if (!context.Academies.Any())
@@ -51,9 +56,14 @@ internal class EdulinkSeeder(EduLinkDbContext context) : IEdulinkSeeder
 
     private IEnumerable<Academy> GetAcademies()
     {
+        User manager = new()
+        {
+            Email="seeder@test.com"
+        };
         List<Academy> academies = [
              new()
         {
+                 Manager=manager,
             Name = "expert",
             Category = "Software",
             Description = "....",
@@ -83,6 +93,7 @@ internal class EdulinkSeeder(EduLinkDbContext context) : IEdulinkSeeder
         } ,
             new()
         {
+                Manager= manager,
             Name = "danesh",
             Category = "Software",
             Description = "....",

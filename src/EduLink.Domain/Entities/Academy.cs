@@ -15,7 +15,7 @@ public class Academy
 
     // Navigation Properties
     public Address? Address { get; set; }
-    public List<Course> Courses { get; set; } = [];
+    public List<Course> Courses { get; set; } = new();
 
     public User Manager { get; set; } = default!;
     public string ManagerId { get; set; } = default!;

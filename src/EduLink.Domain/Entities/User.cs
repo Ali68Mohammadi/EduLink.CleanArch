@@ -6,5 +6,5 @@ public class User : IdentityUser
 {
     public DateOnly? DateOfBirth { get; set; }
     public string? Nationality { get; set; }
-    public IEnumerable<Academy> ManagedAcademies { get; set; } = [];
+    public List<Academy> ManagedAcademies { get; set; } = new();
 }
