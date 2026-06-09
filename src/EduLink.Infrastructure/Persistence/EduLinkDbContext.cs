@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace EduLink.Domain.Entities.Persistence;
 
@@ -26,11 +27,19 @@ internal class EduLinkDbContext(DbContextOptions<EduLinkDbContext> options) :
                 .HasForeignKey(c => c.AcademyId)
                 .OnDelete(DeleteBehavior.Cascade); // Optional: Delete courses if academy is deleted
 
+            entity.Property(a => a.PhotosUrls)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null!),
+                    v => string.IsNullOrEmpty(v)
+                        ? new List<string>()
+                        : JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions)null!)!
+                );
+
         });
 
         modelBuilder.Entity<User>()
           .HasMany(m => m.ManagedAcademies)
-          .WithOne(a=>a.Manager)
+          .WithOne(a => a.Manager)
           .HasForeignKey(a => a.ManagerId);
 
     }

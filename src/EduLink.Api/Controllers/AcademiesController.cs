@@ -9,6 +9,8 @@ using EduLink.Infrastructure.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using EduLink.Application.Academies.Commands.UploadAcademyLogo;
+using EduLink.Application.Academies.Commands.UploadAcademyPhotos;
 
 namespace EduLink.Api.Controllers;
 
@@ -28,7 +30,7 @@ public class AcademiesController(IMediator mediator) : ControllerBase
 
 
     [HttpGet("{id}")]
-    [Authorize(Policy = PlicyNames.HasNationality)]
+    //[Authorize(Policy = PlicyNames.HasNationality)]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         AcademyDto academy = await mediator.Send(new GetAcademyByIdQuery(id));
@@ -70,4 +72,36 @@ public class AcademiesController(IMediator mediator) : ControllerBase
 
     }
 
+
+
+    [HttpPost("{id}/logo")]
+    public async Task<IActionResult> UploadLogo([FromRoute] int id, IFormFile file)
+    {
+        using var stream = file.OpenReadStream();
+        var command = new UploadAcademyLogoCommand
+        {
+            AcademyId = id,
+            FileName = $"{id}-{file.FileName}",
+            File = stream
+        };
+
+        await mediator.Send(command);
+        return NoContent();
+    }
+
+
+
+    [HttpPost("{id}/photos")]
+    public async Task<IActionResult> UploadAcademyPhotos([FromRoute] int id, List<IFormFile> files)
+    {
+
+        var command = new UploadAcademyPhotosCommand()
+        {
+            AcademyId = id,
+            Files = files
+        };
+
+        await mediator.Send(command);
+        return NoContent();
+    }
 }

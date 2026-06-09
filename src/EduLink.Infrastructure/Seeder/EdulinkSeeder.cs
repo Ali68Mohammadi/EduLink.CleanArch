@@ -10,26 +10,52 @@ internal class EdulinkSeeder(EduLinkDbContext context) : IEdulinkSeeder
 {
     public async Task SeedAsync()
     {
-        if (context.Database.GetPendingMigrations().Any())
+        try
         {
-            await context.Database.MigrateAsync();
-        }
+            Console.WriteLine("Seeder Started");
 
-        if (await context.Database.CanConnectAsync())
-        {
-            if (!context.Academies.Any())
+            if (context.Database.GetPendingMigrations().Any())
             {
-                var academies = GetAcademies();
-                await context.AddRangeAsync(academies);
+                Console.WriteLine("Running Migrations");
+                await context.Database.MigrateAsync();
+                Console.WriteLine("Migrations Done");
+            }
+
+            if (await context.Database.CanConnectAsync())
+            {
+                Console.WriteLine("Database Connected");
+
+                if (!await context.Academies.AnyAsync())
+                {
+                    Console.WriteLine("Creating Academies");
+
+                    var academies = GetAcademies();
+
+                    await context.AddRangeAsync(academies);
+
+                    await context.SaveChangesAsync();
+
+                    Console.WriteLine("Academies Created");
+                }
+            }
+
+            if (!await context.Roles.AnyAsync())
+            {
+                Console.WriteLine("Creating Roles");
+
+                var roles = GetRoles();
+
+                await context.Roles.AddRangeAsync(roles);
+
                 await context.SaveChangesAsync();
+
+                Console.WriteLine("Roles Created");
             }
         }
-
-         if (!context.Roles.Any())
+        catch (Exception ex)
         {
-            var roles = GetRoles();
-            context.Roles.AddRange(roles);
-            context.SaveChanges();
+            Console.WriteLine(ex.ToString());
+            throw;
         }
     }
 

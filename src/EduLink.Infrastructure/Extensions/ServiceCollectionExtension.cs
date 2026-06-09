@@ -3,9 +3,11 @@ using EduLink.Domain.Entities.Persistence;
 using EduLink.Domain.Interfaces;
 using EduLink.Domain.Repositories;
 using EduLink.Infrastructure.Authorization;
+using EduLink.Infrastructure.Storage;
 using EduLink.Infrastructure.Authorization.Requirements.CreateMinimumAcademiesRequirement;
 using EduLink.Infrastructure.Authorization.Requirements.MinimumAgeRequirement;
 using EduLink.Infrastructure.Authorization.Services;
+using EduLink.Infrastructure.Configuration;
 using EduLink.Infrastructure.Repositories;
 using EduLink.Infrastructure.Seeder;
 using Microsoft.AspNetCore.Authorization;
@@ -48,6 +50,9 @@ namespace EduLink.Infrastructure.Extensions
             services.AddScoped<IAuthorizationHandler, CreateMinimumAcademiesRequirementHandler>();
             services.AddScoped<IAcademyAuthorizationService, AcademyAuthorizationService>();
             services.AddScoped<IProfileAuthorizationService, ProfileAuthorizationService>();
+
+            services.Configure<BlobStorageSettings>(configuration.GetSection("BlobStorage"));
+            services.AddScoped<IBlobStorageService, BlobStorgeService>();
         }
     }
 }

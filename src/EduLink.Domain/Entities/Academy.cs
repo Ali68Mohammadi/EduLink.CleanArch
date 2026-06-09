@@ -19,5 +19,7 @@ public class Academy
 
     public User Manager { get; set; } = default!;
     public string ManagerId { get; set; } = default!;
+    public string? LogoUrl { get; set; }
+    public List<string> PhotosUrls { get; set; } = [];
 
 }

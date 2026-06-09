@@ -13,5 +13,5 @@ public interface IAcademiesRepository
     Task<IEnumerable<Academy>> GetByManagerIdAsync(string managerId);
     Task<(IEnumerable<Academy>, int)> GetAllMatchingAsync(string SearchPhrase,
         int pageNumber, int pageSize, string? sortBy, SortDirectionEnm sortDirection);
-
+    Task AddPhotoUrlAsync(int academyId, string photoUrl);
 }

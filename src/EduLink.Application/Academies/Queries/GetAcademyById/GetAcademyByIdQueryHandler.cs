@@ -2,6 +2,7 @@
 using EduLink.Application.Academies.Dtos;
 using EduLink.Domain.Entities;
 using EduLink.Domain.Exceptions;
+using EduLink.Domain.Interfaces;
 using EduLink.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,8 @@ namespace EduLink.Application.Academies.Queries.GetAcademyById;
 
 public class GetAcademyByIdQueryHandler(IAcademiesRepository academiesRepository,
     ILogger<GetAcademyByIdQueryHandler> logger,
-    IMapper mapper) : IRequestHandler<GetAcademyByIdQuery, AcademyDto>
+    IMapper mapper,
+    IBlobStorageService blobStorageService) : IRequestHandler<GetAcademyByIdQuery, AcademyDto>
 {
     public async Task<AcademyDto> Handle(GetAcademyByIdQuery request, CancellationToken cancellationToken)
     {
@@ -19,7 +21,10 @@ public class GetAcademyByIdQueryHandler(IAcademiesRepository academiesRepository
                   ?? throw new NotFoundException(nameof(Academy), request.Id.ToString());
 
         var academyDto = mapper.Map<AcademyDto>(academy);
-        return academyDto!;
+
+        academyDto.LogoSasUrl = blobStorageService.GetBlobSasUrl(academy.LogoUrl);
+
+        return academyDto;
 
     }
 }

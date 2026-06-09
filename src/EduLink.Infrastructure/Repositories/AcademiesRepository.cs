@@ -1,6 +1,7 @@
 ﻿using EduLink.Domain.Constants;
 using EduLink.Domain.Entities;
 using EduLink.Domain.Entities.Persistence;
+using EduLink.Domain.Exceptions;
 using EduLink.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -81,5 +82,19 @@ internal class AcademiesRepository(EduLinkDbContext context) : IAcademiesReposit
             .ToListAsync();
 
         return (academies, totalCount);
+    }
+
+    public async Task AddPhotoUrlAsync(int academyId, string photoUrl)
+    {
+        var academy = await context.Academies
+          .FirstOrDefaultAsync(a => a.Id == academyId)
+            ?? throw new NotFoundException(nameof(Academy), academyId.ToString());
+
+        var newList = new List<string>(academy.PhotosUrls)
+        {
+            photoUrl
+        };
+
+        academy.PhotosUrls = newList;
     }
 }

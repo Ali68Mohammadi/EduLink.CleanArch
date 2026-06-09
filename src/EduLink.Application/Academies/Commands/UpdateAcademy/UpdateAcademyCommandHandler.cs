@@ -12,7 +12,7 @@ namespace EduLink.Application.Academies.Commands.UpdateAcademy;
 
 public class UpdateAcademyCommandHandler(IAcademiesRepository academiesRepository,
     ILogger<UpdateAcademyCommandHandler> logger,
-    IMapper mapper, 
+    IMapper mapper,
     IAcademyAuthorizationService academyAuthorizationService) : IRequestHandler<UpdateAcademyCommand>
 {
     public async Task Handle(UpdateAcademyCommand request, CancellationToken cancellationToken)
@@ -22,13 +22,12 @@ public class UpdateAcademyCommandHandler(IAcademiesRepository academiesRepositor
         if (academy is null)
             throw new NotFoundException(nameof(Academy), request.Id.ToString());
 
-        //if (!academyAuthorizationService.Authorize(academy, ResourceOperationEnm.Update))
-        //    throw new ForbidExeption();
-        if (!academyAuthorizationService.Authorize(academy,ResourceOperationEnm.Update))
+        if (!academyAuthorizationService.Authorize(academy, ResourceOperationEnm.Update))
             throw new ForbidExeption();
 
         mapper.Map(request, academy);
         await academiesRepository.SaveChangesAsync();
 
+        await academiesRepository.SaveChangesAsync();
     }
 }

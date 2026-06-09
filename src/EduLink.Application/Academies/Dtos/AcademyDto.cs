@@ -13,6 +13,7 @@ public class AcademyDto
     public string? City { get; set; }
     public string? Street { get; set; }
     public string? PostalCode { get; set; }
+    public string? LogoSasUrl { get; set; }
 
     public List<CourseDto> Courses { get; set; } = [];
 

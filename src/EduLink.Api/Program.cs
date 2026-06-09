@@ -10,35 +10,44 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    //config our Services from WebApplicationBuilder Hier
+    // ================================
+    // 🔥 SERILOG SETUP (IMPORTANT)
+    // ================================
+    Log.Logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(builder.Configuration)
+        .Enrich.FromLogContext()
+        .WriteTo.Console()
+        .CreateLogger();
+
+    builder.Host.UseSerilog();
+
+    // ================================
+    // 🔥 IMPORTANT FOR AZURE LOG STREAM
+    // ================================
+    builder.Logging.ClearProviders();
+    builder.Logging.AddConsole();
+
+    // ================================
+    // SERVICES
+    // ================================
     builder.AddPresentaion();
-
-    //config our Interfaces(repository) and  DbContext Hier
     builder.Services.AddInfrastructure(builder.Configuration);
-
-    //config our Services from IServiceCollection Hier
     builder.Services.AddApplication();
 
 
-
-    //**//////////////////////////////////////////////////////////////////////////////////////////////////**//
-
     var app = builder.Build();
 
+    // Seeder (optional)
+    // var scope = app.Services.CreateScope();
+    // var seeder = scope.ServiceProvider.GetRequiredService<IEdulinkSeeder>();
+    // await seeder.SeedAsync();
 
-    var scope = app.Services.CreateScope();
-    var seeder = scope.ServiceProvider.GetRequiredService<IEdulinkSeeder>();
-
-    await seeder.SeedAsync();
-
+    // Middleware pipeline
     app.UseMiddleware<GlobalErrorHandlerMiddleware>();
-    //app.UseMiddleware<RequestTimeLoggingMiddleware>();
-
 
     app.UseSerilogRequestLogging();
 
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
+    if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     {
         app.UseSwagger();
         app.UseSwaggerUI();
@@ -55,12 +64,14 @@ try
 
     app.MapControllers();
 
-    app.Run();
+    Log.Information("🔥 Application Started Successfully");
 
+    app.Run();
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Application Startup faield");
+    Log.Fatal(ex, "Application Startup failed");
+    Console.WriteLine(ex.ToString());
 }
 finally
 {
