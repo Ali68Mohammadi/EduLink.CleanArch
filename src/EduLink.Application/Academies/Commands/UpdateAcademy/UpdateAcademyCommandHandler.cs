@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using EduLink.Application.Academies.Commands.CreateAcademy;
 using EduLink.Domain.Constants;
 using EduLink.Domain.Entities;
 using EduLink.Domain.Exceptions;
@@ -28,6 +27,5 @@ public class UpdateAcademyCommandHandler(IAcademiesRepository academiesRepositor
         mapper.Map(request, academy);
         await academiesRepository.SaveChangesAsync();
 
-        await academiesRepository.SaveChangesAsync();
     }
 }
